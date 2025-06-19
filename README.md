@@ -56,17 +56,29 @@ Ensure the following dependencies are installed on your machine:
       python manage.py migrate
 
 4. **Ingest a Sample Data File**  
-    You can now ingest a sample .uff flow file into the system. Place the flow file in the appropriate folder, and then run the ingestion command:
+    You can now ingest a sample .uff flow file into the system. Ensure the flow file (e.g., DTC5259515123502080915D0010.uff) is placed in the appropriate folder, and then run        the ingestion command:
 
      ```bash
       python manage.py import_d0010 DTC5259515123502080915D0010.uff
 
+5. **Create a superuser account and log in to the application**  
 
+     ```bash
+      python manage.py createsuperuser
+    # Set up the following information:
+    # Username: 'test_user'
+    # Email address: 'test_user@example.com'
+    # Password: 'testpassword'
+    python manage.py runserver
+     
+6. **View Reading Data**
+    Access the application and view the data by:
 
-
-
-
-
+    - Accessing http://127.0.0.1:8000 in your web browser.
+    - Entering your superuser credentials to log in.
+    - Clicking on "Register Readings" on the left side of the screen.
+    - Searching for Meter Serial Number or MPAN using the search field.
+     
 
 
 
