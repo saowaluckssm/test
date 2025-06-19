@@ -1,6 +1,6 @@
 # Meter Reading Ingestion
 
-This Django project is designed to process "D0010" flow files, which contain meter readings data, in order to communicate with the energy industry. These flow files are provided to Kraken via sFTP and need to be ingested into our database. The data can then be accessed via the Django admin interface by support staff for review.
+This Django project is designed to process "D0010" flow files, which contain meter readings data, in order to communicate with the energy industry. These flow files need to be ingested into the database. The data can then be accessed via the Django admin interface by support staff for review.
 
 ### Author: Saowaluck Morales
 
@@ -8,7 +8,7 @@ This Django project is designed to process "D0010" flow files, which contain met
 
 ## Purpose
 
-The goal of this project is to create a service that can process "D0010" flow files and allow their data to be viewed in the Django admin panel. These files are pipe-delimited and contain important meter readings. The system currently supports file ingestion via the command line, and a REST interface could potentially be added in the future to allow web uploads.
+The goal of this project is to create a service that can process "D0010" flow files and allow their data to be viewed in the Django admin panel. The system currently supports file ingestion via the command line, and a REST interface could potentially be added in the future to allow web uploads.
 
 ---
 
