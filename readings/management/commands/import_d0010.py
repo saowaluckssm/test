@@ -54,7 +54,7 @@ def create_meter_reading(mpan, meter_type, reading_data, file_obj, ingestion_tim
     )
 
 # ----------- Main File Line Processing ---------------------------
-def process_file_lines(lines, ingestion_time, file_name):
+def process_file_lines(lines, ingestion_time, file_obj):
     """
     Parse the file content and generate MeterReading objects.
     Groups each MPAN (026), meter ID (028), and all related 030 lines.
@@ -70,7 +70,6 @@ def process_file_lines(lines, ingestion_time, file_name):
         if line[0] == '026':
             # Flush previous MPAN block
             if mpan and meter_type and register_lines:
-                file_obj = FlowFile.objects.get(file_name=file_name)
                 for register_line in register_lines:
                     reading_data = parse_flow_reading(register_line)
                     if reading_data:
@@ -87,6 +86,15 @@ def process_file_lines(lines, ingestion_time, file_name):
         elif line[0] == 'ZPT':
             continue  # Footer — nothing to do
 
+    # Flush last block after loop ends
+    if mpan and meter_type and register_lines:
+        for register_line in register_lines:
+            reading_data = parse_flow_reading(register_line)
+            if reading_data:
+                readings.append(
+                    create_meter_reading(mpan, meter_type, reading_data, file_obj, ingestion_time)
+                )
+
     return readings
 
 # ----------- Handling Entire File -------------------------------
@@ -98,7 +106,7 @@ def handle_file_ingestion(file_lines, ingestion_time, file_name):
 
     try:
         # Create FlowFile record (for tracking ingestion)
-        FlowFile.objects.create(
+        file_obj = FlowFile.objects.create(
             file_name=file_name,
             header=file_lines[0],
             footer=file_lines[-1],
@@ -106,10 +114,10 @@ def handle_file_ingestion(file_lines, ingestion_time, file_name):
         )
 
         # Generate and save all MeterReading records
-        readings = process_file_lines(file_lines, ingestion_time, file_name)
+        readings = process_file_lines(file_lines, ingestion_time, file_obj)
         MeterReading.objects.bulk_create(readings)
 
-        logger.info(f'File "{file_name}" successfully ingested.')
+        logger.info(f'File "{file_name}" successfully ingested with {len(readings)} meter readings.')
 
     except Exception as e:
         logger.error(f'Error processing file "{file_name}": {e}', exc_info=True)
